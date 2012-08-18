@@ -566,7 +566,7 @@
 ;                        (map (partial + 60) (apply concat (phrase->notes [:I :be :happy])))))
 
 
-;; How about a haiku where each line is played simultaneously! (for a very loose definition of kaiku)
+;; How about a haiku where each line is played simultaneously! (for a very loose definition of haiku)
 ;(let [slow-speed      722
 ;      fast-speed (* 101 (/ slow-speed 200.0))]
 ;  (player (now) slow-speed (map (partial + 60) (apply concat (phrase->notes [:summer :universe]))))
