@@ -1,8 +1,8 @@
 (ns solresol.core
   (:use [clojure.java.io]
         [clojure.string]
-        ;[overtone.live]
-        ))
+        [overtone.live]
+        [overtone.inst.sampled-piano]))
 
 ;; Define some solfege
 (defn solfege->note [s]
@@ -538,9 +538,41 @@
    :centime             "lfsos"})
   
 (defn word->notes [word]
-  (map #(-> % solresol-letter->solfege solfege->note) (re-seq #"d|r|m|f|so|l|s" word)))
+  ;; conj with -120 for a pause between words
+  (conj (map #(-> % solresol-letter->solfege solfege->note) (re-seq #"d|r|m|f|so|l|s" word)) -120))
 
 (defn phrase->notes [phrase]
   (map #(word->notes (dictionary %)) phrase))
+
+
+;; Create a little something to play our notes
+;; From overtone.examples.compositions.piano-phase
+(defn player
+    [t speed notes]
+    (let [n      (first notes)
+                  notes  (next notes)
+                  t-next (+ t speed)]
+          (when n
+                  (at t
+                              (sampled-piano n))
+                  (apply-at t-next #'player [t-next speed notes]))))
+
+(def num-notes 1000)
+
+;; Let's play a phrase!
+;; note the infinitive "to be" is used in place of am. See http://mozai.com/writing/not_mine/solresol/#vbs
+;; for notes on using different verb tenses.
+;(player (now) 338 (take num-notes
+;                        (map (partial + 60) (apply concat (phrase->notes [:I :be :happy])))))
+
+
+;; How about a haiku where each line is played simultaneously! (for a very loose definition of kaiku)
+;(let [slow-speed      722
+;      fast-speed (* 101 (/ slow-speed 200.0))]
+;  (player (now) slow-speed (map (partial + 60) (apply concat (phrase->notes [:summer :universe]))))
+;  (player (now) fast-speed (map (partial + 48) (apply concat (phrase->notes [:orchestra :meet :everywhere]))))
+;  (player (now) slow-speed (map (partial + 72) (apply concat (phrase->notes [:good-day :tomorrow])))))
+
+
 
 
