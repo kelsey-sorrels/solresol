@@ -1,6 +1,6 @@
 # solresol
 
-A Clojure library design to translate English into Solresol and then be played musically.
+A Clojure library designed to translate English into Solresol and then be played musically.
 
 ## Usage
 ```sh
